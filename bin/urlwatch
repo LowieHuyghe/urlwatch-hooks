@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+PARENT="${DIR}/.."
+QUOTED_ARGS="$(printf " %q" "$@")"
+
+bash -c "\"${PARENT}/venv/bin/python\" \"${PARENT}/venv/src/urlwatch/urlwatch\" --hooks \"${PARENT}/hooks.py\" ${QUOTED_ARGS}"
