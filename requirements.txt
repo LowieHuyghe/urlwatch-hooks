@@ -1,0 +1,4 @@
+-e git://github.com/LowieHuyghe/urlwatch.git@ff9e5ec22bb4e0d98c46ac473d8888b13486c21d#egg=urlwatch
+html2text==2018.1.9
+pyppeteer==0.0.25
+PyYAML==3.13
