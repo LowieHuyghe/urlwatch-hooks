@@ -23,7 +23,7 @@ python3 -m virtualenv venv
 Add the bin-folder to your bash/zsh-profile to start using urlwatch
 
 ```bash
-PATH="${PATH}:/YOUR/PROJECTS/FOLDER/urlwatch-hooks/bin"
+export PATH="$PATH:/YOUR/PROJECTS/FOLDER/urlwatch-hooks/bin"
 ```
 
 ## Usage
