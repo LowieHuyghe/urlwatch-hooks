@@ -50,6 +50,81 @@ class AHFilter(filters.FilterBase):
 
         return '\n'.join(lines)
 
+class BFOverviewFilter(filters.FilterBase):
+
+    __kind__ = 'b&foverview'
+
+    def filter(self, data, subfilter=None):
+        self._no_subfilters(subfilter)
+
+        data = CleanHtmlFilter(self.job, self.state).filter(data)
+
+        parent_selector_parser = filters.LxmlParser('css', '.products-list .item', 'selector')
+        parent_selector_parser.feed(data)
+        lines = []
+        for parent_element in parent_selector_parser._get_filtered_elements():
+            parent_data = parent_selector_parser._to_string(parent_element)
+
+            description = filters.CssFilter(self.job, self.state).filter(parent_data, '.product-name')
+            description = filters.Html2TextFilter(self.job, self.state).filter(description, 're')
+            manufacturer = filters.CssFilter(self.job, self.state).filter(parent_data, '.product-name .manufacturer')
+            manufacturer = filters.Html2TextFilter(self.job, self.state).filter(manufacturer, 're')
+            description = description.replace(manufacturer, ' ').strip()
+
+            oldPrice = filters.CssFilter(self.job, self.state).filter(parent_data, '.price-info .price-box .old-price .price')
+            oldPrice = filters.Html2TextFilter(self.job, self.state).filter(oldPrice, 're')    
+            oldPrice = ' - '.join([item.strip() for item in oldPrice.split('\n')])
+            if oldPrice:
+                description = " | ".join([description, oldPrice])
+
+            price = filters.CssFilter(self.job, self.state).filter(
+                parent_data, '.price-info .price-box .special-price .price, .price-info .price-box .regular-price .price'
+            )
+            price = filters.Html2TextFilter(self.job, self.state).filter(price, 're')
+            price = ' - '.join([item.strip() for item in price.split('\n')])
+
+            line = ' | '.join([description, price])
+            line = '  → %s' % line
+            lines.append(line)
+
+        return '\n'.join(lines)
+
+class BFDetailFilter(filters.FilterBase):
+
+    __kind__ = 'b&fdetail'
+
+    def filter(self, data, subfilter=None):
+        self._no_subfilters(subfilter)
+
+        data = CleanHtmlFilter(self.job, self.state).filter(data)
+
+        parent_selector_parser = filters.LxmlParser('css', '.product-essential', 'selector')
+        parent_selector_parser.feed(data)
+        lines = []
+        for parent_element in parent_selector_parser._get_filtered_elements():
+            parent_data = parent_selector_parser._to_string(parent_element)
+
+            description = filters.CssFilter(self.job, self.state).filter(parent_data, '.product-shop .product-name')
+            description = filters.Html2TextFilter(self.job, self.state).filter(description, 're')
+            description = ' - '.join([item.strip() for item in description.split('\n')])
+
+            oldPrice = filters.CssFilter(self.job, self.state).filter(parent_data, '.price-info .price-box .old-price .price')
+            oldPrice = filters.Html2TextFilter(self.job, self.state).filter(oldPrice, 're')    
+            oldPrice = ' - '.join([item.strip() for item in oldPrice.split('\n')])
+            if oldPrice:
+                description = " | ".join([description, oldPrice])
+
+            price = filters.CssFilter(self.job, self.state).filter(
+                parent_data, '.price-info .price-box .special-price .price, .price-info  .price-box .regular-price .price'
+            )
+            price = filters.Html2TextFilter(self.job, self.state).filter(price, 're')
+            price = ' - '.join([item.strip() for item in price.split('\n')])
+
+            line = ' | '.join([description, price])
+            line = '  → %s' % line
+            lines.append(line)
+
+        return '\n'.join(lines)
 
 class CustomReporter(reporters.ReporterBase):
 
