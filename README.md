@@ -60,6 +60,22 @@ filter: ah
 max_tries: 5
 options:
   waitUntil: networkidle0
+---
+name: "Body & Fit - Vitamines"
+kind: "browser"
+filter: b&foverview
+navigate: "https://www.bodyenfitshop.nl/vitamines/vitamine-toppers/?limit=81"
+max_tries: 5
+options:
+  waitUntil: networkidle0
+---
+name: "Body & Fit - Sportdrank"
+kind: "browser"
+filter: b&fdetail
+navigate: "https://www.bodyenfitshop.nl/isotone-sportdrank/"
+max_tries: 5
+options:
+  waitUntil: networkidle0
 ```
 
 ### Example config.yaml
